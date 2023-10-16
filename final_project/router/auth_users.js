@@ -45,7 +45,7 @@ regd_users.post("/login", (req,res) => {
     }, 'access', { expiresIn: 60 * 60 });
 
     req.session.authorization = {accessToken,username}
-  return res.status(200).send("User successfully logged in");
+  return res.status(200).send("Customer successfully logged in");
   } else {
     return res.status(208).json({message: "Invalid Login. Check username and password"});
   }
@@ -58,15 +58,15 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const userReview = req.params.review;
   const isbn = req.params.isbn;
   let bookReviews = books[isbn].reviews;
-  let rExists = false;
+  let reviewExists = false;
   for (const username in bookReviews) {
       if (username === curr) {
           bookReviews[curr] = userReview;
-          rExists = true;
+          reviewExists = true;
           break;
       }
   }
-  if (!rExists) {
+  if (!reviewExists) {
       bookReviews[curr] = userReview;
   }
   res.send("The customer's review has been added/updated successfully.");
@@ -76,18 +76,18 @@ regd_users.delete('/auth/review/:isbn', (req, res) => {
     const curr = req.session.authorization.username;
     const isbn = req.params.isbn;
     const bookReviews = books[isbn].reviews;
-    let rExists = false;
+    let reviewExists = false;
     for (const username in bookReviews) {
         if (username === curr) {
             delete bookReviews[curr];
-            rExists = true;
+            reviewExists = true;
             break;
         }
     }
-    if (!rExists) {
-        res.send("The User was unable to delete the review.");
+    if (!reviewExists) {
+        res.send("The Customer was unable to delete the review.");
     }
-    res.send("The User deleted the review successfully.");
+    res.send("The Customer deleted the review successfully.");
 });
 
 module.exports.authenticated = regd_users;
